@@ -40,3 +40,22 @@ void write_pixel(t_canvas *canvas, int x, int y, t_tuple *color)
 	for(int i = 0; i < SIZE; i++)
 		canvas->pixels[y][x].components[i] = color->components[i];
 }
+
+char *ft_strbuild(char *s1, char *s2)
+{
+	char *str = ft_strjoin(s1, s2);
+	free(s1);
+	free(s2);
+	return (str);
+}
+
+char *canvs_to_ppm(t_canvas *canvas)
+{
+	char *str = ft_strbuild(ft_strdup("P3\n"), ft_itoa(255));
+	str = ft_strbuild(str, ft_strdup("\n"));
+	str = ft_strbuild(str, ft_itoa(canvas->width));
+	str = ft_strbuild(str, ft_strdup(" "));
+	str = ft_strbuild(str, ft_itoa(canvas->height));
+	str = ft_strbuild(str, ft_strdup("\n"));
+	return str;
+}
