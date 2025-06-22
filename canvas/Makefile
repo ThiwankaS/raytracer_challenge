@@ -13,6 +13,7 @@ CFLAGS = -Werror -Wall -Wextra -g -fsanitize=address,undefined
 SRCS = \
 	canvas.c\
 	tuple.c\
+	projectile.c\
 	main.c\
 
 OBJS = $(SRCS:.c=.o)

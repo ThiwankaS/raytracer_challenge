@@ -3,7 +3,9 @@
 
 # include <string.h>
 # include "tuple.h"
+# include "projectile.h"
 # include "./ft_libft/libft.h"
+# include <fcntl.h>
 
 typedef struct s_canvas
 {
@@ -16,6 +18,6 @@ void write_pixel(t_canvas *canvas, int x, int y, t_tuple *color);
 t_canvas *init_canvas(int width, int height);
 
 char *strjoin(char *s1, char *s2);
-char *canvs_to_ppm(t_canvas *canvas);
+void canvs_to_ppm(t_canvas *canvas, int fd);
 
 # endif
