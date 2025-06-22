@@ -4,9 +4,10 @@ CMD = cc
 
 INCLUDES = matrix.h
 
-CFLAGS = -Werror -Wall -Wextra -IINCLUDES
+CFLAGS = -Werror -Wall -Wextra -g -fsanitize=address,undefined
 
 SRCS = \
+	tuple.c\
 	matrix.c\
 	main.c\
 
