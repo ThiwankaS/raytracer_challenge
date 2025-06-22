@@ -25,7 +25,7 @@ void matrix_print(t_matrix *m)
 	{
 		for(int j = 0; j < m->column; j++)
 		{
-			printf("|%6.2f|",m->data[i][j]);
+			printf("| %10.5f|",m->data[i][j]);
 			printf(" ");
 		}
 		printf("\n");
@@ -114,15 +114,6 @@ t_matrix *matrix_transpose(t_matrix *m)
 	return t;
 }
 
-double matrix_determinent(t_matrix *m)
-{
-	double det = 0.0;
-	if(!m)
-		return det;
-	det = m->data[0][0] * m->data[1][1] - m->data[0][1] * m->data[1][0];
-	return det;
-}
-
 t_matrix *matrix_submatrix(t_matrix *m, int row, int column)
 {
 	int x, y;
@@ -156,4 +147,56 @@ double matrix_minor(t_matrix *m, int row, int column)
 	det = matrix_determinent(temp);
 	matrix_free(temp);
 	return det;
+}
+
+double matrix_cofactor(t_matrix *m, int row, int column)
+{
+	double det = matrix_minor(m, row, column);
+	if((row + column) % 2 != 0)
+		det = det * -1;
+	return det;
+}
+
+double matrix_determinent(t_matrix *m)
+{
+	double det = 0.0;
+	if(!m)
+		return det;
+	if(m->column == 2)
+		det = m->data[0][0] * m->data[1][1] - m->data[0][1] * m->data[1][0];
+	else
+	{
+		for(int i = 0; i < m->column; i++)
+			det += m->data[0][i] * matrix_cofactor(m, 0, i);
+	}
+	return det;
+}
+
+t_matrix *matrix_inverse(t_matrix *m)
+{
+	double det = matrix_determinent(m);
+	if (det == 0.0)
+		return NULL;
+	t_matrix *cofactors = matrix_init(m->row, m->column);
+	if(!m)
+		return NULL;
+	for(int i = 0; i < m->row; i++)
+	{
+		for(int j = 0; j < m->row; j++)
+		{
+			cofactors->data[i][j] = matrix_cofactor(m, i, j);
+		}
+	}
+	t_matrix *transpose = matrix_transpose(cofactors);
+	t_matrix *inverse = matrix_init(cofactors->row, cofactors->column);
+	for(int i = 0; i < m->row; i++)
+	{
+		for(int j = 0; j < m->row; j++)
+		{
+			inverse->data[i][j] = transpose->data[i][j] / det;
+		}
+	}
+	matrix_free(cofactors);
+	matrix_free(transpose);
+	return inverse;
 }

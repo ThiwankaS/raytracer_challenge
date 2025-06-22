@@ -21,10 +21,12 @@ int matrix_compare(t_matrix *m1, t_matrix *m2);
 
 double matrix_determinent(t_matrix *m);
 double matrix_minor(t_matrix *m, int row, int column);
+double matrix_cofactor(t_matrix *m, int row, int column);
 
 t_matrix *matrix_init(int row, int columns);
 t_matrix *matrix_multiply(t_matrix *m1, t_matrix *m2);
 t_matrix *matrix_transpose(t_matrix *m);
+t_matrix *matrix_inverse(t_matrix *m);
 t_matrix *matrix_submatrix(t_matrix *m, int row, int column);
 
 t_tuple *matrix_multiply_by_tuple(t_matrix *m, t_tuple *t);
