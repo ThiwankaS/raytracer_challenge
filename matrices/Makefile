@@ -1,14 +1,14 @@
-PROG = project
+PROG = matrix
 
 CMD = cc
 
-INCLUDES = tuple.h projectile.h
+INCLUDES = matrix.h
 
 CFLAGS = -Werror -Wall -Wextra -IINCLUDES
 
 SRCS = \
-	projectile.c\
-	tuple.c\
+	matrix.c\
+	main.c\
 
 OBJS = $(SRCS:.c=.o)
 
