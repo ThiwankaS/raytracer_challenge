@@ -4,10 +4,6 @@
 # include "tuple.h"
 # include "matrix.h"
 # include "transform.h"
-# include <fcntl.h>
-# include <stdint.h>
-# include <unistd.h>
-# include <stdarg.h>
 
 # define SPHERE 1
 
