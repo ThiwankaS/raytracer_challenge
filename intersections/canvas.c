@@ -22,7 +22,7 @@ t_tuple **init_pixels(int width, int height)
 
 t_canvas *init_canvas(int width, int height)
 {
-	t_canvas *canvas = malloc(sizeof(t_canvas));
+	t_canvas *canvas = calloc(1, sizeof(t_canvas));
 	if (!canvas)
 		return NULL;
 	canvas->width = width;

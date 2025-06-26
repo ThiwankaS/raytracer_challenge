@@ -4,6 +4,12 @@
 # include "tuple.h"
 # include "matrix.h"
 # include "transform.h"
+# include <fcntl.h>
+# include <stdint.h>
+# include <unistd.h>
+# include <stdarg.h>
+
+# define SPHERE 1
 
 typedef struct s_ray
 {
@@ -11,17 +17,33 @@ typedef struct s_ray
 	t_tuple *direction;
 } t_ray;
 
-typedef struct s_sphere
+typedef struct s_object
 {
 	int x;
 	int y;
 	int z;
+	int id;
+	int type;
 	double radius;
-} t_sphere;
+} t_object;
 
-double *intersects(t_sphere *s, t_ray *r);
+typedef struct s_intersect
+{
+	double value;
+	t_object *object;
+} t_intersect;
+
+typedef struct s_intersections
+{
+	int count;
+	t_intersect *array;
+} t_intersections;
+
+t_intersect *calculate_intersects(t_object *object, t_ray *r);
+t_intersect *intersection(double t, t_object *object);
+t_intersections *intersections(int count, ...);
 
 t_tuple *position(t_ray *ray, double t);
-t_sphere *sphere_init(double radius, int x, int y, int z);
+t_object *object_init(double radius, int x, int y, int z, int type);
 
 # endif
