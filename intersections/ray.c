@@ -61,22 +61,47 @@ t_intersect *intersection(double t, t_object *object)
 	return i;
 }
 
-t_intersections *intersections(int count, ...)
+t_intersections *intersections(t_intersections *xs, t_intersect *intersect)
 {
-	t_intersections *xs = calloc(1, sizeof(t_intersections));
 	if(!xs)
-		return NULL;
-	xs->count = count;
-	xs->array = calloc(count, sizeof(t_intersect));
-	if(!xs->array)
-		return NULL;
-	va_list args;
-	va_start(args, count);
-	for(int i = 0; i < count; i++)
 	{
-		t_intersect *arg = va_arg(args, t_intersect *);
-		xs->array[i] = *arg;
+		t_intersections *xs = calloc(1, sizeof(t_intersections));
+		if(!xs)
+			return NULL;
+		xs->intersect = intersect;
+		xs->next = NULL;
+		xs->count = 1;
+		return xs;
 	}
-	va_end(args);
+	t_intersections *current = xs, *previous;
+	while(current)
+	{
+		previous = current;
+		current = current->next;
+	}
+	t_intersections *new = calloc(1, sizeof(t_intersections));
+	if(!new)
+		return xs;
+	new->intersect = intersect;
+	new->next = NULL;
+	previous->next = new;
+	xs->count++;
 	return xs;
+}
+
+t_intersect *hit(t_intersections *xs)
+{
+	t_intersect *i = NULL;
+	t_intersections *current = xs, *previous;
+	while(current)
+	{
+		previous = current;
+		if(previous->intersect->value > 0.0)
+		{
+			if(!i || previous->intersect->value < i->value)
+				i = previous->intersect;
+		}
+		current = current->next;
+	}
+	return i;
 }

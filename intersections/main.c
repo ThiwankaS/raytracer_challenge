@@ -3,24 +3,39 @@
 int main (void)
 {
 	t_object *s = object_init(1, 0, 0, 0, SPHERE);
-	t_intersect *i1 = intersection(5, s);
-	t_intersect *i2 = intersection(7, s);
-	t_intersect *i3 = intersection(-3, s);
-	t_intersect *i4 = intersection(2, s);
-	t_intersections *xs = intersections(4, i1, i2, i3, i4);
+	t_intersect *i1 = intersection(-1, s);
+	t_intersect *i2 = intersection(1, s);
+	t_intersect *i3 = intersection(-5, s);
+	t_intersect *i4 = intersection(-2, s);
+	t_intersections *xs = NULL;
 
-	for(int i = 0; i < xs->count; i++)
+	xs = intersections(xs, i1);
+	xs = intersections(xs, i2);
+	xs = intersections(xs, i3);
+	xs = intersections(xs, i4);
+
+	t_intersections *current = xs;
+	while(current)
 	{
-		printf("xs.array[%d].t : %.2f\n", i, xs->array[i].value);
-		printf("xs.array[%d].object.id : %d\n", i, xs->array[i].object->id);
+		printf("xs.intersect.value : %.2f\n", current->intersect->value);
+		printf("xs.object.id : %d\n", current->intersect->object->id);
+		printf("xs.count : %d\n\n", current->count);
+		current = current->next;
 	}
-	
+	t_intersect *result = hit(xs);
+	printf("result.value : %.2f\n", result->value);
+	printf("result.object.id : %d\n", result->object->id);
 	free(s);
 	free(i1);
 	free(i2);
 	free(i3);
 	free(i4);
-	free(xs->array);
-	free(xs);
+	t_intersections *temp = xs;
+	while(xs)
+	{
+		temp = xs;
+		xs = xs->next;
+		free(temp);
+	}
 	return (0);
 }

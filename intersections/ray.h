@@ -36,12 +36,15 @@ typedef struct s_intersect
 typedef struct s_intersections
 {
 	int count;
-	t_intersect *array;
+	t_intersect *intersect;
+	struct s_intersections *next;
 } t_intersections;
 
+
+t_intersect *hit(t_intersections *xs);
 t_intersect *calculate_intersects(t_object *object, t_ray *r);
 t_intersect *intersection(double t, t_object *object);
-t_intersections *intersections(int count, ...);
+t_intersections *intersections(t_intersections *xs, t_intersect *intersect);
 
 t_tuple *position(t_ray *ray, double t);
 t_object *object_init(double radius, int x, int y, int z, int type);
