@@ -42,19 +42,19 @@ void matrix_free(t_matrix *m)
 
 t_matrix *matrix_init(int row, int columns)
 {
-	t_matrix *m = calloc(sizeof(t_matrix), 1);
+	t_matrix *m = calloc(1, sizeof(t_matrix));
 	if(!m)
 		return NULL;
 	if (row <= 0 || columns <= 0)
 		return NULL;
-	m->data = calloc(sizeof(double *), row);
+	m->data = calloc(row, sizeof(double *));
 	if(!m->data)
 		return NULL;
 	m->row = row;
 	m->column = columns;
 	for(int i = 0;i < row; i++)
 	{
-		m->data[i] = calloc(sizeof(double), columns);
+		m->data[i] = calloc(columns, sizeof(double));
 		if(!m->data)
 		{
 			for(int j = 0; j < i; j++)
