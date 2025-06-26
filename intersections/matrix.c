@@ -54,7 +54,7 @@ t_matrix *matrix_init(int row, int columns)
 	m->column = columns;
 	for(int i = 0;i < row; i++)
 	{
-		m->data[i] = calloc(columns, sizeof(double));
+		m->data[i] = calloc( columns, sizeof(double));
 		if(!m->data)
 		{
 			for(int j = 0; j < i; j++)
