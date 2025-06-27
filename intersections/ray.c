@@ -19,11 +19,14 @@ t_object *object_init(double radius, int x, int y, int z, int type)
 	s->x = x;
 	s->y = y;
 	s->z = z;
+	s->transform = get_identity_matrix(4, 4);
 	return s;
 }
 
-t_intersect *calculate_intersects(t_object *object, t_ray *r)
+t_intersect *calculate_intersects(t_object *object, t_ray *rp)
 {
+	t_matrix *inverse = matrix_inverse(object->transform);
+	t_ray *r = transform(rp, inverse);
 	t_tuple *center = point(object->x, object->y, object->z);
 	t_tuple *distance = substrctTuples(r->origin, center);
 	double a = dot(r->direction, r->direction);
@@ -33,6 +36,10 @@ t_intersect *calculate_intersects(t_object *object, t_ray *r)
 	double discriminent = (b * b) - (4 * a * c);
 	free(center);
 	free(distance);
+	free(r->direction);
+	free(r->origin);
+	free(r);
+	matrix_free(inverse);
 	t_intersect *intersects = calloc(2, sizeof(t_intersect));
 	if(!intersects)
 		return NULL;
@@ -104,4 +111,36 @@ t_intersect *hit(t_intersections *xs)
 		current = current->next;
 	}
 	return i;
+}
+
+t_matrix *get_identity_matrix(int row, int column)
+{
+	t_matrix *m = matrix_init(row, column);
+	if(!m)
+		return NULL;
+	for(int i = 0; i < row; i++)
+	{
+		for(int j = 0; j < column; j++)
+		{
+			if(i == j)
+				m->data[i][j] = 1.0;
+		}
+	}
+	return m;
+}
+
+t_ray *transform(t_ray *r, t_matrix *m)
+{
+	t_ray *new = calloc(1, sizeof(t_ray));
+	if(!new)
+		return NULL;
+	new->origin = matrix_multiply_by_tuple(m, r->origin);
+	new->direction = matrix_multiply_by_tuple(m, r->direction);
+	return new;
+}
+
+void set_transform(t_object *s, t_matrix *m)
+{
+	matrix_free(s->transform);
+	s->transform = m;
 }
