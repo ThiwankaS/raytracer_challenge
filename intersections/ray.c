@@ -40,17 +40,11 @@ t_intersect *calculate_intersects(t_object *object, t_ray *rp)
 	free(r->origin);
 	free(r);
 	matrix_free(inverse);
+	if(discriminent < 0)
+		return NULL;
 	t_intersect *intersects = calloc(2, sizeof(t_intersect));
 	if(!intersects)
 		return NULL;
-	if(discriminent < 0)
-	{
-		intersects[0].value = 0.00;
-		intersects[0].object = object;
-		intersects[1].value = 0.00;
-		intersects[1].object = object;
-		return intersects;
-	}
 	intersects[0].value = (-b - sqrt(discriminent)) / (2 * a);
 	intersects[0].object = object;
 	intersects[1].value = (-b + sqrt(discriminent)) / (2 * a);
