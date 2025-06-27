@@ -2,40 +2,47 @@
 
 int main (void)
 {
-	t_object *s = object_init(1, 0, 0, 0, SPHERE);
-	t_intersect *i1 = intersection(-1, s);
-	t_intersect *i2 = intersection(1, s);
-	t_intersect *i3 = intersection(-5, s);
-	t_intersect *i4 = intersection(-2, s);
-	t_intersections *xs = NULL;
+	int light_x = 0, light_y = 0, light_z = -5;
+	double wall_x, wall_y, wall_z = 10.0;
+	double wall_size = 7.0;
+	int width = 100, height = 100;
+	double pixel_size = wall_size / width;
 
-	xs = intersections(xs, i1);
-	xs = intersections(xs, i2);
-	xs = intersections(xs, i3);
-	xs = intersections(xs, i4);
+	t_ray r;
+	r.origin = point(light_x,light_y,light_z);
+	t_tuple *color = point(1, 0, 0);
+	t_object *s = object_init(1,0,0,0,SPHERE);
+	t_canvas *canvas = init_canvas(width, height);
+	t_tuple *p, *temp;
+	t_intersect *xs;
 
-	t_intersections *current = xs;
-	while(current)
+	for(int y = 0; y < (height -1); y++)
 	{
-		printf("xs.intersect.value : %.2f\n", current->intersect->value);
-		printf("xs.object.id : %d\n", current->intersect->object->id);
-		printf("xs.count : %d\n\n", current->count);
-		current = current->next;
+		wall_y = (wall_size / 2) - (pixel_size * y);
+		for(int x = 0; x <(width - 1); x++)
+		{
+			wall_x = (pixel_size * x) - (wall_size / 2);
+			p = point(wall_x, wall_y, wall_z);
+			temp = substrctTuples(p, r.origin);
+			r.direction = normalize(temp);
+			free(temp);
+			xs = calculate_intersects(s, &r);
+			if(xs && (xs[0].value >= 0 || xs[1].value >= 0))
+				write_pixel(canvas, x, y, color);
+			free(r.direction);
+			free(p);
+			free(xs);
+		}
 	}
-	t_intersect *result = hit(xs);
-	printf("result.value : %.2f\n", result->value);
-	printf("result.object.id : %d\n", result->object->id);
+
+	int fd = open("sphere.ppm", O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	canvs_to_ppm(canvas, fd);
+	close(fd);
+
+	free(r.origin);
+	matrix_free(s->transform);
 	free(s);
-	free(i1);
-	free(i2);
-	free(i3);
-	free(i4);
-	t_intersections *temp = xs;
-	while(xs)
-	{
-		temp = xs;
-		xs = xs->next;
-		free(temp);
-	}
+	free(color);
+	canvas_free(canvas);
 	return (0);
 }

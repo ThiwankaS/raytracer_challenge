@@ -22,7 +22,7 @@ t_tuple **init_pixels(int width, int height)
 
 t_canvas *init_canvas(int width, int height)
 {
-	t_canvas *canvas = malloc(sizeof(t_canvas));
+	t_canvas *canvas = calloc(1, sizeof(t_canvas));
 	if (!canvas)
 		return NULL;
 	canvas->width = width;
@@ -106,4 +106,12 @@ void canvs_to_ppm(t_canvas *canvas, int fd)
 		}
 		write(fd, "\n", 1);
 	}
+}
+
+void canvas_free(t_canvas *canvas)
+{
+	for(int i = 0; i < canvas->height; i++)
+		free(canvas->pixels[i]);
+	free(canvas->pixels);
+	free(canvas);
 }

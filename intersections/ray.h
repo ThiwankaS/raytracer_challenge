@@ -4,12 +4,11 @@
 # include "tuple.h"
 # include "matrix.h"
 # include "transform.h"
-# include <fcntl.h>
-# include <stdint.h>
-# include <unistd.h>
-# include <stdarg.h>
+# include "canvas.h"
 
 # define SPHERE 1
+
+
 
 typedef struct s_ray
 {
@@ -19,11 +18,10 @@ typedef struct s_ray
 
 typedef struct s_object
 {
-	int x;
-	int y;
-	int z;
+	int x, y, z;
 	int id;
 	int type;
+	t_matrix *transform;
 	double radius;
 } t_object;
 
@@ -41,6 +39,10 @@ typedef struct s_intersections
 } t_intersections;
 
 
+void set_transform(t_object *s, t_matrix *m);
+
+t_ray *transform(t_ray *r, t_matrix *m);
+
 t_intersect *hit(t_intersections *xs);
 t_intersect *calculate_intersects(t_object *object, t_ray *r);
 t_intersect *intersection(double t, t_object *object);
@@ -48,5 +50,7 @@ t_intersections *intersections(t_intersections *xs, t_intersect *intersect);
 
 t_tuple *position(t_ray *ray, double t);
 t_object *object_init(double radius, int x, int y, int z, int type);
+
+t_matrix *get_identity_matrix(int row, int column);
 
 # endif
