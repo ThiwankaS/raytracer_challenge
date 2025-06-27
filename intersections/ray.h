@@ -4,6 +4,7 @@
 # include "tuple.h"
 # include "matrix.h"
 # include "transform.h"
+# include "canvas.h"
 
 # define SPHERE 1
 

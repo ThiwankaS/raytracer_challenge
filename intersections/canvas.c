@@ -107,3 +107,11 @@ void canvs_to_ppm(t_canvas *canvas, int fd)
 		write(fd, "\n", 1);
 	}
 }
+
+void canvas_free(t_canvas *canvas)
+{
+	for(int i = 0; i < canvas->height; i++)
+		free(canvas->pixels[i]);
+	free(canvas->pixels);
+	free(canvas);
+}
