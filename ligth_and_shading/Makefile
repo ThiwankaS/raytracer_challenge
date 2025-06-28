@@ -1,4 +1,4 @@
-PROG = ray
+PROG = draw
 
 LIBFT_DIR = ft_libft
 
@@ -15,8 +15,9 @@ SRCS = \
 	transform.c\
 	tuple.c\
 	matrix.c\
-	main.c\
 	ray.c\
+	3Dgraphic.c\
+	main.c\
 
 
 OBJS = $(SRCS:.c=.o)
