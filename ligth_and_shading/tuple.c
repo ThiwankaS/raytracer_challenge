@@ -21,7 +21,7 @@ void printTuple(t_tuple *tuple, char *str)
 	printf(" %s : {{ ", str);
 	for(int i = 0; i < SIZE;i++)
 	{
-		printf("%.2f", tuple->components[i]);
+		printf("%.4f", tuple->components[i]);
 		if(i < (SIZE -1))
 			printf(", ");
 	}
@@ -248,4 +248,18 @@ t_tuple *vector(double x, double y, double z)
 	if(!v)
 		return NULL;
 	return v;
+}
+/**
+ * method of blending two colors works by multiplying
+ * corresponding components of each color to form a new color.
+ * It’s technically called the Hadamard product (or Schur product)
+ */
+t_tuple *hadamard_product(t_tuple *t1, t_tuple *t2)
+{
+	t_tuple *new = createTuple(0,0,0,0);
+	if(!new)
+		return NULL;
+	for(int i = 0; i < SIZE; i++)
+		new->components[i] = t1->components[i] * t2->components[i];
+	return new;
 }

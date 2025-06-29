@@ -10,6 +10,8 @@
 
 t_tuple *normal_at(t_object *s, t_tuple *p);
 t_tuple *reflect(t_tuple *in, t_tuple *normal);
+t_tuple *lighting(t_material *m, t_light *light, t_tuple *position, t_tuple *eye, t_tuple *normal);
+
 t_light *point_light(t_tuple *position, t_tuple *intensity);
 
 # endif

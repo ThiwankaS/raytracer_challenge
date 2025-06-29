@@ -2,29 +2,27 @@
 
 int main (void)
 {
-	t_object *s = object_init(1.0, 0.0, 0.0, 0.0, SPHERE);
-
-	printf("default values : \n");
-	printf("ambient   : %.2f\n", s->material->ambient);
-	printf("diffiuse  : %.2f\n", s->material->diffiuse);
-	printf("specular  : %.2f\n", s->material->specular);
-	printf("shininess : %.2f\n", s->material->shininess);
-
 	t_material *m = material_init();
-	m->ambient = 1.0;
-	free(s->material->color);
-	free(s->material);
-	s->material = m;
+	t_tuple *position = point(0,0,0);
 
-	printf("new values : \n");
-	printf("ambient   : %.2f\n", s->material->ambient);
-	printf("diffiuse  : %.2f\n", s->material->diffiuse);
-	printf("specular  : %.2f\n", s->material->specular);
-	printf("shininess : %.2f\n", s->material->shininess);
+	t_tuple *eye = vector(0,0,-1);
+	t_tuple *normal = vector(0,0,-1);
+	t_tuple *p1 = point(0,0,10);
+	t_tuple *color = point(1,1,1);
+	t_light *light = point_light(p1, color);
 
-	free(s->material->color);
-	matrix_free(s->transform);
-	free(s);
+	t_tuple *result = lighting(m, light, position, eye, normal);
+
+	printTuple(result, "result");
+
+	free(m->color);
 	free(m);
+	free(position);
+	free(eye);
+	free(normal);
+	free(p1);
+	free(color);
+	free(light);
+	free(result);
 	return (0);
 }
