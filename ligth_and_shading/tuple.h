@@ -36,6 +36,7 @@ t_tuple *normalize(t_tuple *tuple);
 t_tuple *cross(t_tuple *t1, t_tuple *t2);
 t_tuple *point(double x, double y, double z);
 t_tuple *vector(double x, double y, double z);
+t_tuple *hadamard_product(t_tuple *t1, t_tuple *t2);
 
 double magnitude(t_tuple *tuple);
 double dot(t_tuple *t1, t_tuple *t2);

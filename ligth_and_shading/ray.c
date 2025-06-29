@@ -20,6 +20,7 @@ t_object *object_init(double radius, int x, int y, int z, int type)
 	s->y = y;
 	s->z = z;
 	s->transform = get_identity_matrix(4, 4);
+	s->material = material_init();
 	return s;
 }
 
@@ -137,4 +138,17 @@ void set_transform(t_object *s, t_matrix *m)
 {
 	matrix_free(s->transform);
 	s->transform = m;
+}
+
+t_material *material_init(void)
+{
+	t_material *material = calloc(1, sizeof(t_material));
+	if(!material)
+		return NULL;
+	material->color = point(1.0,1.0,1.0);
+	material->ambient = 0.1;
+	material->diffiuse = 0.9;
+	material->specular = 0.9;
+	material->shininess = 200.0;
+	return material;
 }
