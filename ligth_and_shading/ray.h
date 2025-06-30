@@ -56,8 +56,8 @@ t_material *material_init(void);
 t_ray *transform(t_ray *r, t_matrix *m);
 
 t_intersect *hit(t_intersections *xs);
-t_intersect *calculate_intersects(t_object *object, t_ray *r);
 t_intersect *intersection(double t, t_object *object);
+t_intersect *calculate_intersects(t_object *object, t_ray *rp);
 
 t_intersections *intersections(t_intersections *xs, t_intersect *intersect);
 

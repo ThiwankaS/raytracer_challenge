@@ -6,7 +6,7 @@
 # include "transform.h"
 # include "canvas.h"
 # include "ray.h"
-# include "./ft_libft/ft_printf.h"
+# include "./ft_libft/libft.h"
 
 t_tuple *normal_at(t_object *s, t_tuple *p);
 t_tuple *reflect(t_tuple *in, t_tuple *normal);

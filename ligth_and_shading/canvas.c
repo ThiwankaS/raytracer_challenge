@@ -35,7 +35,7 @@ void write_pixel(t_canvas *canvas, int x, int y, t_tuple *color)
 {
 	if(!canvas || !color)
 		return;
-	if(x < 0 && x >= canvas->width &&  y < 0 && y >= canvas->height)
+	if(x < 0 || x >= canvas->width || y < 0 || y >= canvas->height)
 		return;
 	for(int i = 0; i < SIZE; i++)
 		canvas->pixels[y][x].components[i] = color->components[i];
@@ -51,7 +51,8 @@ char *ft_strbuild(char *s1, char *s2)
 
 int set_boundry(double value)
 {
-	int result = (int)value * 255;
+	double mul = value * 255;
+	int result = (int)mul;
 	if (result > 255)
 		result = 255;
 	if (result < 0)

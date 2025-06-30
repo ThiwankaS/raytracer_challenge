@@ -145,7 +145,7 @@ t_material *material_init(void)
 	t_material *material = calloc(1, sizeof(t_material));
 	if(!material)
 		return NULL;
-	material->color = point(1.0,1.0,1.0);
+	material->color = point(1.0,0.2,1.0);
 	material->ambient = 0.1;
 	material->diffiuse = 0.9;
 	material->specular = 0.9;
