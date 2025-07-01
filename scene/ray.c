@@ -24,17 +24,19 @@ t_object *object_init(double radius, int x, int y, int z, int type)
 	return s;
 }
 
-t_intersect *calculate_intersects(t_object *object, t_ray *rp)
+t_intersections *calculate_intersects(t_intersections *xs, t_object *object, t_ray *rp)
 {
 	t_matrix *inverse = matrix_inverse(object->transform);
 	t_ray *r = transform(rp, inverse);
-	t_tuple *center = point(object->x, object->y, object->z);
+	t_tuple *center = point(0, 0, 0);
 	t_tuple *distance = substrctTuples(r->origin, center);
 	double a = dot(r->direction, r->direction);
 	double b = 2.0 * dot(r->direction, distance);
 	double c = dot(distance, distance) - pow(object->radius, 2);
 
 	double discriminent = (b * b) - (4 * a * c);
+	double value;
+	t_intersect *intersects;
 	free(center);
 	free(distance);
 	free(r->direction);
@@ -43,14 +45,17 @@ t_intersect *calculate_intersects(t_object *object, t_ray *rp)
 	matrix_free(inverse);
 	if(discriminent < 0)
 		return NULL;
-	t_intersect *intersects = calloc(2, sizeof(t_intersect));
-	if(!intersects)
-		return NULL;
-	intersects[0].value = (-b - sqrt(discriminent)) / (2 * a);
-	intersects[0].object = object;
-	intersects[1].value = (-b + sqrt(discriminent)) / (2 * a);
-	intersects[1].object = object;
-	return intersects;
+
+	//Adding first intersect to the intersections list
+	value = (-b - sqrt(discriminent)) / (2 * a);
+	intersects = intersection(value, object);
+	xs = intersections(xs, intersects);
+
+	//Adding second intersect to the intersections list
+	value = (-b + sqrt(discriminent)) / (2 * a);
+	intersects = intersection(value, object);
+	xs = intersections(xs, intersects);
+	return xs;
 }
 
 t_intersect *intersection(double t, t_object *object)
@@ -75,20 +80,59 @@ t_intersections *intersections(t_intersections *xs, t_intersect *intersect)
 		xs->count = 1;
 		return xs;
 	}
-	t_intersections *current = xs, *previous;
-	while(current)
-	{
-		previous = current;
+	t_intersections *current = xs;
+	while(current && current->next)
 		current = current->next;
-	}
 	t_intersections *new = calloc(1, sizeof(t_intersections));
 	if(!new)
 		return xs;
 	new->intersect = intersect;
+	new->count = xs->count + 1;
 	new->next = NULL;
-	previous->next = new;
+	current->next = new;
 	xs->count++;
 	return xs;
+}
+
+t_intersections *intersections_sort(t_intersections *xs)
+{
+	int swapped = 0;
+	t_intersections *current = xs;
+	t_intersect *temp;
+
+	if(!xs || !xs->next)
+		return xs;
+
+	while(1)
+	{
+		swapped = 0;
+		while(current && current->next)
+		{
+			if(current->intersect->value > current->next->intersect->value)
+			{
+				temp = current->intersect;
+				current->intersect = current->next->intersect;
+				current->next->intersect = temp;
+				swapped = 1;
+			}
+			current = current->next;
+		}
+		if(!swapped)
+			break;
+	}
+	return xs;
+}
+
+void free_intersections(t_intersections *xs)
+{
+	t_intersections *current = xs, *temp;
+	while(current)
+	{
+		temp = current->next;
+		free(current->intersect);
+		free(current);
+		current = temp;
+	}
 }
 
 t_intersect *hit(t_intersections *xs)

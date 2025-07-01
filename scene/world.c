@@ -69,13 +69,53 @@ t_world *world_init(void)
 		s1->material->color = point(0.8, 1.0, 0.6);
 	}
 	world->object_list = list_add(world->object_list, s1);
-	t_object *s2 = object_init(0.5,0,0,0,SPHERE);
+	t_object *s2 = object_init(0.5,0.0,0.0,0.0,SPHERE);
 	if(s2)
 	{
-		t_matrix *v = scalor(0.5, 0.5, 0.5);
-		matrix_free(s2->transform);
-		s2->transform = v;
+		t_matrix *scale = scalor(0.50, 0.50, 0.50);
+		set_transform(s2, scale);
 	}
 	world->object_list = list_add(world->object_list, s2);
 	return world;
+}
+
+t_intersections *intersect_world(t_world *world, t_ray *r)
+{
+	t_intersections *xs = NULL;
+	t_list *current = world->object_list;
+	while(current)
+	{
+		xs = calculate_intersects(xs, current->object, r);
+		current = current->next;
+	}
+	return xs;
+}
+
+t_compute *prepare_compute(t_intersect *i, t_ray *r)
+{
+	t_compute *comp = calloc(1, sizeof(t_compute));
+	if(!comp)
+		return NULL;
+	comp->value = i->value;
+	comp->object = i->object;
+	comp->p = position(r, i->value);
+	comp->eye_v = negatingTuples(r->direction);
+	comp->normal_v = normal_at(i->object, comp->p);
+	double mul = dot(comp->eye_v, comp->normal_v);
+	if(mul < 0)
+	{
+		comp->inside = true;
+		t_tuple *neg = negatingTuples(comp->normal_v);
+		free(comp->normal_v);
+		comp->normal_v = neg;
+	}
+	else
+		comp->inside = false;
+	return comp;
+}
+
+t_tuple *shade_hit(t_object *object, t_world *world, t_compute *comp)
+{
+	t_tuple *color = lighting(object->material, world->light, comp->p, comp->eye_v, comp->normal_v);
+	return color;
 }
