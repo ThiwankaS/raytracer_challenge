@@ -50,6 +50,7 @@ typedef struct s_intersections
 } t_intersections;
 
 void set_transform(t_object *s, t_matrix *m);
+void free_intersections(t_intersections *xs);
 
 t_material *material_init(void);
 
@@ -57,9 +58,10 @@ t_ray *transform(t_ray *r, t_matrix *m);
 
 t_intersect *hit(t_intersections *xs);
 t_intersect *intersection(double t, t_object *object);
-t_intersect *calculate_intersects(t_object *object, t_ray *rp);
 
+t_intersections *intersections_sort(t_intersections *xs);
 t_intersections *intersections(t_intersections *xs, t_intersect *intersect);
+t_intersections *calculate_intersects(t_intersections *xs, t_object *object, t_ray *rp);
 
 t_tuple *position(t_ray *ray, double t);
 
