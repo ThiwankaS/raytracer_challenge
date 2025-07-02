@@ -32,7 +32,7 @@ t_intersections *calculate_intersects(t_intersections *xs, t_object *object, t_r
 	t_tuple *distance = substrctTuples(r->origin, center);
 	double a = dot(r->direction, r->direction);
 	double b = 2.0 * dot(r->direction, distance);
-	double c = dot(distance, distance) - pow(object->radius, 2);
+	double c = dot(distance, distance) - 1.0;
 
 	double discriminent = (b * b) - (4 * a * c);
 	double value;
