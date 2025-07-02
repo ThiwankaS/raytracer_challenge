@@ -31,9 +31,10 @@ void object_free(t_object *object);
 void list_clear(t_list *list);
 
 t_world *world_init(void);
-
+t_matrix *view_transformation(t_tuple *from, t_tuple *to, t_tuple *up);
 t_compute *prepare_compute(t_intersect *i, t_ray *r);
 
+t_tuple *color_at(t_world *world, t_ray *r);
 t_tuple *shade_hit(t_object *object, t_world *world, t_compute *comp);
 
 t_list *list_add(t_list *list, t_object *object);

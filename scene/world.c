@@ -69,7 +69,7 @@ t_world *world_init(void)
 		s1->material->color = point(0.8, 1.0, 0.6);
 	}
 	world->object_list = list_add(world->object_list, s1);
-	t_object *s2 = object_init(0.5,0.0,0.0,0.0,SPHERE);
+	t_object *s2 = object_init(1.0,0.0,0.0,0.0,SPHERE);
 	if(s2)
 	{
 		t_matrix *scale = scalor(0.50, 0.50, 0.50);
@@ -118,4 +118,88 @@ t_tuple *shade_hit(t_object *object, t_world *world, t_compute *comp)
 {
 	t_tuple *color = lighting(object->material, world->light, comp->p, comp->eye_v, comp->normal_v);
 	return color;
+}
+
+t_tuple *color_at(t_world *world, t_ray *r)
+{
+	t_tuple *color = point(0,0,0);
+	t_intersections *xs = intersect_world(world, r);
+	t_intersect *i = hit(xs);
+	if(i)
+	{
+		free(color);
+		color = NULL;
+		t_compute *comp = prepare_compute(i, r);
+		color = shade_hit(i->object, world, comp);
+		free(comp->p);
+		free(comp->eye_v);
+		free(comp->normal_v);
+		free(comp);
+		free_intersections(xs);
+		return color;
+	}
+	free_intersections(xs);
+	return color;
+}
+
+t_matrix *view_transformation(t_tuple *from, t_tuple *to, t_tuple *up)
+{
+	/**
+	 * Compute the forward vector by subtracting from from to. Normalize the result.
+	*/
+	t_tuple *sub = substrctTuples(to, from);
+	t_tuple *forward = normalize(sub);
+
+	/**
+	 * Compute the left vector by taking the cross product of forward and the
+	 * normalized up vector.
+	 */
+	t_tuple *left = cross(forward, up);
+
+	/**
+	 * Compute the true_up vector by taking the cross product of left and forward. This allows
+	 * original up vector to be only approximately up, which makes framing scenes
+	 * a lot easier.
+	 */
+	t_tuple *true_up = cross(left, forward);
+
+
+	t_matrix *result, *orientaion, *translate;
+
+	/**
+	 * construct a matrix that represents the orientation transformation
+	*/
+	orientaion = get_identity_matrix(4,4);
+	orientaion->data[0][0] = left->components[0];
+	orientaion->data[0][1] = left->components[1];
+	orientaion->data[0][2] = left->components[2];
+	orientaion->data[1][0] = true_up->components[0];
+	orientaion->data[1][1] = true_up->components[1];
+	orientaion->data[1][2] = true_up->components[2];
+	orientaion->data[2][0] = -forward->components[0];
+	orientaion->data[2][1] = -forward->components[1];
+	orientaion->data[2][2] = -forward->components[2];
+	orientaion->data[3][3] = 1;
+
+	/**
+	 * construct a corresponding translaotr matrix
+	*/
+	translate = translator(-from->components[0], -from->components[1], -from->components[2]);
+
+	/**
+	 * transform = orientation_matrix x translator_matrix;
+	*/
+	result = matrix_multiply(orientaion, translate);
+
+	/**
+	 * free all the temporarly heap allocated memory
+	*/
+	free(forward);
+	free(left);
+	free(true_up);
+	free(sub);
+	matrix_free(orientaion);
+	matrix_free(translate);
+
+	return result;
 }
