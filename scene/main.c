@@ -2,26 +2,6 @@
 
 int main(void)
 {
-	t_material *m = material_init();
-	t_tuple *p = point(0,0,0);
-	t_tuple *eye = vector(0,0,-1);
-	t_tuple *normal = vector(0,0,-1);
-	t_light *light = point_light(point(0, 0, -10), point(1, 1, 1));
-	t_tuple *result = lighting(m, light, p, eye, normal);
-	printTuple(result, "result");
-
-	free(m->color);
-	free(m);
-	free(p);
-	free(eye);
-	free(normal);
-	free(light->color);
-	free(light->position);
-	free(light);
-	free(result);
-	return (0);
-}
-/*
 	t_world *world = world_init();
 	t_ray r1 = {.direction = vector(0,0,1), .origin = point(0,0,-5)};
 	t_object *shape1 = world->object_list->object;
@@ -62,4 +42,5 @@ int main(void)
 	free(comp2);
 	free(color2);
 	free(i2);
- */
+	return (0);
+}

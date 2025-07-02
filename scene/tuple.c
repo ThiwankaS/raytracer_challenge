@@ -21,7 +21,7 @@ void printTuple(t_tuple *tuple, char *str)
 	printf(" %s : {{ ", str);
 	for(int i = 0; i < SIZE;i++)
 	{
-		printf("%.4f", tuple->components[i]);
+		printf("%.5f", tuple->components[i]);
 		if(i < (SIZE -1))
 			printf(", ");
 	}

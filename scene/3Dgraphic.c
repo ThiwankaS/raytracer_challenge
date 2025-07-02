@@ -82,9 +82,6 @@ t_tuple *lighting(t_material *m, t_light *light, t_tuple *position, t_tuple *eye
 		else
 		{
 			double factor = pow(reflect_dot_eye, m->shininess);
-				printf("light_dot_normal : %.4f\n", light_dot_normal);
-				printf("reflect_dot_eye : %.4f\n", reflect_dot_eye);
-				printf("factor : %.4f\n", factor);
 			specular = scalerMultiplication(light->color, (m->specular * factor));
 		}
 		free(neg_lightv);
@@ -92,9 +89,6 @@ t_tuple *lighting(t_material *m, t_light *light, t_tuple *position, t_tuple *eye
 	}
 	temp = addTuples(ambient, diffiuse);
 	result = addTuples(temp, specular);
-	printTuple(ambient,"ambient");
-	printTuple(diffiuse,"diffuse");
-	printTuple(specular,"specular");
 	result->components[3] = 1.0;
 	free(temp);
 	free(effective_color);
