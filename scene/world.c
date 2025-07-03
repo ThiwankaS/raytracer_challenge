@@ -264,9 +264,9 @@ t_canvas *render(t_camera *camera, t_world *world)
 	t_canvas *image = init_canvas(camera->hsize, camera->vsize);
 	if(!image)
 		return NULL;
-	for(int y = 0; y < (camera->vsize - 1); y++)
+	for(int y = 0; y < (camera->vsize); y++)
 	{
-		for(int x = 0; x < (camera->hsize - 1);x++)
+		for(int x = 0; x < (camera->hsize);x++)
 		{
 			r = ray_for_pixel(camera, x, y);
 			color = color_at(world, r);
