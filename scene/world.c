@@ -203,3 +203,79 @@ t_matrix *view_transformation(t_tuple *from, t_tuple *to, t_tuple *up)
 
 	return result;
 }
+
+t_camera *camera_init(int hsize, int vsize, double fov)
+{
+	double half_view, aspect;
+	t_camera *camera = calloc(1, sizeof(t_camera));
+	if(!camera)
+		return NULL;
+	camera->hsize = hsize;
+	camera->vsize = vsize;
+	camera->fov = fov;
+	camera->transform = get_identity_matrix(4,4);
+	half_view = tan(fov/2);
+	aspect = hsize /(double) vsize;
+	if(aspect >= 1)
+	{
+		camera->half_width = half_view;
+		camera->half_height = half_view / aspect;
+	}
+	else
+	{
+		camera->half_width = half_view * aspect;
+		camera->half_height = half_view;
+	}
+	camera->pixel_size = (camera->half_width * 2) / camera->hsize;
+	return camera;
+}
+
+t_ray *ray_for_pixel(t_camera *camera, int px, int py)
+{
+	double xoffset = (px + 0.5) * camera->pixel_size;
+	double yoffset = (py + 0.5) * camera->pixel_size;
+
+	double world_x = camera->half_width - xoffset;
+	double world_y = camera->half_height - yoffset;
+
+	t_matrix *inverse = matrix_inverse(camera->transform);
+	t_tuple *p = point(world_x, world_y, -1);
+	t_tuple *abs_p = point(0,0,0);
+	t_tuple *pixel = matrix_multiply_by_tuple(inverse, p);
+	t_tuple *origin = matrix_multiply_by_tuple(inverse, abs_p);
+	t_tuple *temp = substrctTuples(pixel, origin);
+	t_tuple *direction = normalize(temp);
+	t_ray *r = calloc(1, sizeof(t_ray));
+
+	matrix_free(inverse);
+	free(p);
+	free(abs_p);
+	free(pixel);
+	free(temp);
+	r->direction = direction;
+	r->origin = origin;
+	return r;
+}
+
+t_canvas *render(t_camera *camera, t_world *world)
+{
+	t_ray *r;
+	t_tuple *color;
+	t_canvas *image = init_canvas(camera->hsize, camera->vsize);
+	if(!image)
+		return NULL;
+	for(int y = 0; y < (camera->vsize - 1); y++)
+	{
+		for(int x = 0; x < (camera->hsize - 1);x++)
+		{
+			r = ray_for_pixel(camera, x, y);
+			color = color_at(world, r);
+			write_pixel(image, x, y, color);
+			free(r->direction);
+			free(r->origin);
+			free(r);
+			free(color);
+		}
+	}
+	return image;
+}
