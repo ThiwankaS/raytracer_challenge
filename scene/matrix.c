@@ -178,7 +178,7 @@ t_matrix *matrix_inverse(t_matrix *m)
 	if (det == 0.0)
 		return NULL;
 	t_matrix *cofactors = matrix_init(m->row, m->column);
-	if(!m)
+	if(!cofactors)
 		return NULL;
 	for(int i = 0; i < m->row; i++)
 	{
