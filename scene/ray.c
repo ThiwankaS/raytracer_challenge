@@ -72,13 +72,13 @@ t_intersections *intersections(t_intersections *xs, t_intersect *intersect)
 {
 	if(!xs)
 	{
-		t_intersections *xs = calloc(1, sizeof(t_intersections));
-		if(!xs)
+		t_intersections *new = calloc(1, sizeof(t_intersections));
+		if(!new)
 			return NULL;
-		xs->intersect = intersect;
-		xs->next = NULL;
-		xs->count = 1;
-		return xs;
+		new->intersect = intersect;
+		new->next = NULL;
+		new->count = 1;
+		return new;
 	}
 	t_intersections *current = xs;
 	while(current && current->next)
