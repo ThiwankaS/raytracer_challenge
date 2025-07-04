@@ -1,9 +1,10 @@
 # ifndef FT_TRANSFORM_H
 # define FT_TRANSFORM_H
+# define _GNU_SOURCE
 
 # include "matrix.h"
 
-# define PI 3.14159
+# define PI M_PI
 
 t_matrix *translator(double x, double y, double z);
 t_matrix *scalor(double x, double y, double z);

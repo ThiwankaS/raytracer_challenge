@@ -44,7 +44,7 @@ t_intersections *calculate_intersects(t_intersections *xs, t_object *object, t_r
 	free(r);
 	matrix_free(inverse);
 	if(discriminent < 0)
-		return NULL;
+		return xs;
 
 	//Adding first intersect to the intersections list
 	value = (-b - sqrt(discriminent)) / (2 * a);
