@@ -15,8 +15,10 @@ int main(void)
 
 	t_canvas *image = render(camera, world);
 
-	// t_tuple *pixel = image->pixels[5];
-	// printTuple(pixel, "pixel");
+	int fd = open("scene.ppm", O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	if(fd > 0)
+		canvs_to_ppm(image, fd);
+	close(fd);
 
 	matrix_free(camera->transform);
 	free(camera);
