@@ -37,9 +37,21 @@ int main(void)
 	pln2->transform = matrix_multiply(m1, m2);
 	matrix_free(m1);
 	matrix_free(m2);
-	free(pln1->material->color);
+	free(pln2->material->color);
 	pln2->material->color = floor_color1;
 	world->object_list = list_add(world->object_list, pln2);
+
+	t_object *pln3 = plane_init();
+	t_tuple *floor_color2 = point(0.4, 0.4, 0.9);
+	t_matrix *m3 = translator(-20,-5,10);
+	t_matrix *m4 = rotate_z_axis(M_PI/2);
+	matrix_free(pln3->transform);
+	pln3->transform = matrix_multiply(m3, m4);
+	matrix_free(m3);
+	matrix_free(m4);
+	free(pln3->material->color);
+	pln3->material->color = floor_color2;
+	world->object_list = list_add(world->object_list, pln3);
 	/**
 	 * creating and adding the fourth sphere
 	*/
@@ -124,11 +136,39 @@ int main(void)
 
 	t_canvas *image = render(camera, world);
 
-	int fd = open("shadowed.ppm", O_CREAT | O_WRONLY | O_TRUNC, 0644);
-	if(fd > 0)
-		canvs_to_ppm(image, fd);
-	close(fd);
+	mlx_t* mlx = mlx_init(500, 250, "Ray Tracer Output", false);
+	if (!mlx)
+	{
+		fprintf(stderr, "Failed to initialize MLX42\n");
+		return (1);
+	}
+	mlx_image_t* img = mlx_new_image(mlx, 500, 250);
+	if (!img)
+	{
+		fprintf(stderr, "Failed to create MLX image\n");
+		mlx_terminate(mlx);
+		return (1);
+	}
 
+	for (int y = 0; y < 250; ++y)
+	{
+		for (int x = 0; x < 500; ++x)
+		{
+			color_t pixel = image->pixels[y * 500 + x];
+
+			// Convert your pixel (assuming float r, g, b in 0.0 to 1.0) to ARGB
+			uint32_t argb = (255 << 24) |           // Alpha = 255
+							((int)(pixel.r * 255) << 16) |
+							((int)(pixel.g * 255) << 8) |
+							((int)(pixel.b * 255));
+
+			// Set pixel in MLX image
+			mlx_put_pixel(img, x, y, argb);
+		}
+	}
+	mlx_image_to_window(mlx, img, 0, 0);
+	mlx_loop(mlx);
+	mlx_terminate(mlx);
 	matrix_free(camera->transform);
 	free(camera);
 
