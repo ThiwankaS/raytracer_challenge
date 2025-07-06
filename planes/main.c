@@ -12,69 +12,34 @@ int main(void)
 	/**
 	 * decalaring all the required data structures
 	*/
-	t_matrix *floor_transform = scalor(10, 0.01, 10);
-	t_material *floor_material = material_init();
-	t_tuple *floor_color = point(1, 0.9, 0.9);
-	t_tuple *wall_left_color = point(1, 0.9, 0.9);
-	t_tuple *wall_right_color = point(1, 0.9, 0.9);
+	//t_matrix *floor_transform = scalor(10, 0.01, 10);
+	//t_material *floor_material = material_init();
+	//t_tuple *floor_color = point(1, 0.9, 0.9);
+	//t_tuple *wall_left_color = point(1, 0.9, 0.9);
+	//t_tuple *wall_right_color = point(1, 0.9, 0.9);
 	t_matrix *rotate_x = rotate_x_axis(M_PI / 2);
 	t_matrix *rotate_y1 = rotate_y_axis((M_PI / 4) * -1);
 	t_matrix *rotate_y2 = rotate_y_axis((M_PI / 4));
 	t_matrix *wall_translation = translator(0, 0, 5);
 
-	/**
-	 * the very first sphere will become the floor
-	*/
-	free(floor_material->color);
-	floor_material->color = NULL;
-	floor_material->color = floor_color;
-	floor_material->specular = 0.0;
-	// set up the floor material for first sphere
-	free(world->object_list->object->material->color);
-	free(world->object_list->object->material);
-	world->object_list->object->material = NULL;
-	world->object_list->object->material = floor_material;
-	// set up transfromation for first sphere
-	matrix_free(world->object_list->object->transform);
-	world->object_list->object->transform = NULL;
-	world->object_list->object->transform = floor_transform;
 
-	/**
-	 * the second sphere will beacome the left wall
-	*/
-	t_matrix *mlw1 = matrix_multiply(rotate_x, floor_transform);
-	t_matrix *mlw2 = matrix_multiply(rotate_y1, mlw1);
-	// set up the material for the second sphere
-	free(world->object_list->next->object->material->color);
-	world->object_list->next->object->material->color = NULL;
-	world->object_list->next->object->material->color = wall_left_color;
-	world->object_list->next->object->material->specular = 0.0;
-	// set up transfromation for second sphere
-	matrix_free(world->object_list->next->object->transform);
-	world->object_list->next->object->transform = NULL;
-	world->object_list->next->object->transform = matrix_multiply(wall_translation, mlw2);
-	matrix_free(mlw2);
+	t_object *pln1 = plane_init();
+	t_tuple *floor_color = point(1, 0.9, 0.9);
+	free(pln1->material->color);
+	pln1->material->color = floor_color;
+	world->object_list = list_add(world->object_list, pln1);
 
-	/**
-	 * creating and adding the third sphere which will become the right
-	 * wall
-	*/
-	t_object *wall_right = object_init(1.0,0,0,0,SPHERE);
-	free(wall_right->material->color);
-	matrix_free(wall_right->transform);
-	wall_right->material->color = NULL;
-	wall_right->transform = NULL;
-	// set up material for third sphere
-	wall_right->material->color = wall_right_color;
-	wall_right->material->specular = 0.0;
-	t_matrix *mlr1 = matrix_multiply(rotate_y2 ,mlw1);
-	// set up transformation for third sphere
-	wall_right->transform = matrix_multiply(wall_translation, mlr1);
-	matrix_free(mlr1);
-	matrix_free(mlw1);
-	// adding newly created third sphere to the object list
-	world->object_list = list_add(world->object_list, wall_right);
-
+	t_object *pln2 = plane_init();
+	t_tuple *floor_color1 = point(0.8, 0.5, 0.5);
+	t_matrix *m1 = translator(0,0,10);
+	t_matrix *m2 = rotate_x_axis(M_PI/2);
+	matrix_free(pln2->transform);
+	pln2->transform = matrix_multiply(m1, m2);
+	matrix_free(m1);
+	matrix_free(m2);
+	free(pln1->material->color);
+	pln2->material->color = floor_color1;
+	world->object_list = list_add(world->object_list, pln2);
 	/**
 	 * creating and adding the fourth sphere
 	*/

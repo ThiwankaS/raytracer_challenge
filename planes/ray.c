@@ -21,15 +21,15 @@ t_object *object_init(double radius, int x, int y, int z, int type)
 	s->z = z;
 	s->transform = get_identity_matrix(4, 4);
 	s->material = material_init();
-	s->inverse = matrix_inverse(s->transform);
 	return s;
 }
 
 t_intersections *calculate_intersects(t_intersections *xs, t_object *object, t_ray *rp)
 {
-	double value;
+	t_matrix *inverse = matrix_inverse(object->transform);
+	t_ray *r = transform(rp, inverse);
 	t_intersect *intersects;
-	t_ray *r = transform(rp, object->inverse);
+	double value;
 	if(object->type == SPHERE)
 	{
 		t_tuple *center = point(0, 0, 0);
@@ -44,6 +44,7 @@ t_intersections *calculate_intersects(t_intersections *xs, t_object *object, t_r
 		free(r->direction);
 		free(r->origin);
 		free(r);
+		matrix_free(inverse);
 		if(discriminent < 0)
 			return xs;
 
@@ -59,15 +60,21 @@ t_intersections *calculate_intersects(t_intersections *xs, t_object *object, t_r
 	}
 	if(object->type == PLANE)
 	{
-		if(r->direction->components[1] > EPSILON)
+		if(fabs(r->direction->components[1]) < EPSILON)
 		{
-			value = (r->origin->components[1] / r->direction->components[1]) * -1;
-			intersects = intersection(value, object);
-			xs = intersections(xs, intersects);
+			free(r->direction);
+			free(r->origin);
+			free(r);
+			matrix_free(inverse);
+			return xs;
 		}
+		value = -r->origin->components[1] / r->direction->components[1];
+		intersects = intersection(value, object);
+		xs = intersections(xs, intersects);
 		free(r->direction);
 		free(r->origin);
 		free(r);
+		matrix_free(inverse);
 	}
 	return xs;
 }
@@ -195,9 +202,7 @@ t_ray *transform(t_ray *r, t_matrix *m)
 void set_transform(t_object *s, t_matrix *m)
 {
 	matrix_free(s->transform);
-	matrix_free(s->inverse);
 	s->transform = m;
-	s->inverse = matrix_inverse(s->transform);
 }
 
 t_material *material_init(void)

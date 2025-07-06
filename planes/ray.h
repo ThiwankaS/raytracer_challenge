@@ -36,7 +36,6 @@ typedef struct s_object
 	int type;
 	double radius;
 	t_matrix *transform;
-	t_matrix *inverse;
 	t_material *material;
 } t_object;
 

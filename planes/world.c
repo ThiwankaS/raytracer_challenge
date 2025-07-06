@@ -32,7 +32,6 @@ void object_free(t_object *object)
 	free(object->material->color);
 	free(object->material);
 	matrix_free(object->transform);
-	matrix_free(object->inverse);
 	free(object);
 }
 
@@ -61,22 +60,23 @@ t_world *world_init(void)
 	t_tuple *color = point(1,1,1);
 	t_light *light = point_light(origin, color);
 	world->light = light;
-	t_object *s1 = object_init(1,0,0,0,SPHERE);
-	if(s1)
-	{
-		s1->material->diffuse = 0.7;
-		s1->material->specular = 0.2;
-		free(s1->material->color);
-		s1->material->color = point(0.8, 1.0, 0.6);
-	}
-	world->object_list = list_add(world->object_list, s1);
-	t_object *s2 = object_init(1.0,0.0,0.0,0.0,SPHERE);
-	if(s2)
-	{
-		t_matrix *scale = scalor(0.50, 0.50, 0.50);
-		set_transform(s2, scale);
-	}
-	world->object_list = list_add(world->object_list, s2);
+	world->object_list = NULL;
+	// t_object *s1 = sphere_init();
+	// if(s1)
+	// {
+	// 	s1->material->diffuse = 0.7;
+	// 	s1->material->specular = 0.2;
+	// 	free(s1->material->color);
+	// 	s1->material->color = point(0.8, 1.0, 0.6);
+	// }
+	// world->object_list = list_add(world->object_list, s1);
+	// t_object *s2 = sphere_init();
+	// if(s2)
+	// {
+	// 	t_matrix *scale = scalor(0.50, 0.50, 0.50);
+	// 	set_transform(s2, scale);
+	// }
+	// world->object_list = list_add(world->object_list, s2);
 	return world;
 }
 

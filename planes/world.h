@@ -2,6 +2,7 @@
 # define FT_WORLD_H
 
 # include "3Dgraphic.h"
+# include "shape.h"
 # include "./ft_libft/ft_printf.h"
 
 typedef struct s_list

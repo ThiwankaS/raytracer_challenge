@@ -6,4 +6,4 @@
 t_object *sphere_init(void);
 t_object *plane_init(void);
 
-# endif
+#endif
