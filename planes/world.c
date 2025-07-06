@@ -32,6 +32,7 @@ void object_free(t_object *object)
 	free(object->material->color);
 	free(object->material);
 	matrix_free(object->transform);
+	matrix_free(object->inverse);
 	free(object);
 }
 

@@ -18,6 +18,7 @@ SRCS = \
 	ray.c\
 	3Dgraphic.c\
 	world.c\
+	shape.c\
 	main.c\
 
 

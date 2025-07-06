@@ -6,7 +6,10 @@
 # include "transform.h"
 # include "canvas.h"
 
-# define SPHERE 1
+# define SPHERE   1
+# define PLANE    2
+# define CUBE     3
+# define CYLINDER 4
 
 typedef struct s_ray
 {
@@ -33,6 +36,7 @@ typedef struct s_object
 	int type;
 	double radius;
 	t_matrix *transform;
+	t_matrix *inverse;
 	t_material *material;
 } t_object;
 
