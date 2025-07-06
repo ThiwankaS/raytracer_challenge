@@ -111,12 +111,16 @@ t_compute *prepare_compute(t_intersect *i, t_ray *r)
 	}
 	else
 		comp->inside = false;
+	t_tuple *temp = scalerMultiplication(comp->normal_v, EPSILON);
+	comp->over_p = addTuples(comp->p, temp);
+	free(temp);
 	return comp;
 }
 
 t_tuple *shade_hit(t_object *object, t_world *world, t_compute *comp)
 {
-	t_tuple *color = lighting(object->material, world->light, comp->p, comp->eye_v, comp->normal_v);
+	bool in_shadow = is_shadowed(world, comp->over_p);
+	t_tuple *color = lighting(object->material, world->light, comp->p, comp->eye_v, comp->normal_v, in_shadow);
 	return color;
 }
 
@@ -132,6 +136,7 @@ t_tuple *color_at(t_world *world, t_ray *r)
 		t_compute *comp = prepare_compute(i, r);
 		color = shade_hit(i->object, world, comp);
 		free(comp->p);
+		free(comp->over_p);
 		free(comp->eye_v);
 		free(comp->normal_v);
 		free(comp);
@@ -278,4 +283,24 @@ t_canvas *render(t_camera *camera, t_world *world)
 		}
 	}
 	return image;
+}
+
+
+bool is_shadowed(t_world *world, t_tuple *p)
+{
+	t_tuple *v = substrctTuples(world->light->position, p);
+	double distance = magnitude(v);
+	t_tuple *direction = normalize(v);
+	t_ray r;
+	bool is_shadowed = false;
+	r.direction = direction;
+	r.origin = p;
+	t_intersections *xs = intersect_world(world, &r);
+	t_intersect *h = hit(xs);
+	if(h && h->value < distance)
+		is_shadowed = true;
+	free(v);
+	free(direction);
+	free_intersections(xs);
+	return is_shadowed;
 }

@@ -22,6 +22,7 @@ typedef struct s_compute
 	double value;
 	t_object *object;
 	t_tuple *p;
+	t_tuple *over_p;
 	t_tuple *eye_v;
 	t_tuple *normal_v;
 } t_compute;
@@ -38,6 +39,7 @@ typedef struct s_camera
 void object_free(t_object *object);
 void list_clear(t_list *list);
 
+bool is_shadowed(t_world *world, t_tuple *p);
 t_world *world_init(void);
 t_matrix *view_transformation(t_tuple *from, t_tuple *to, t_tuple *up);
 t_compute *prepare_compute(t_intersect *i, t_ray *r);

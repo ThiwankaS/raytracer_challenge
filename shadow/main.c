@@ -159,7 +159,7 @@ int main(void)
 
 	t_canvas *image = render(camera, world);
 
-	int fd = open("scene.ppm", O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	int fd = open("shadowed.ppm", O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if(fd > 0)
 		canvs_to_ppm(image, fd);
 	close(fd);

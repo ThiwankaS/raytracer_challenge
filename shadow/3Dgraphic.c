@@ -38,7 +38,7 @@ t_light *point_light(t_tuple *position, t_tuple *intensity)
 	return light;
 }
 
-t_tuple *lighting(t_material *m, t_light *light, t_tuple *position, t_tuple *eye, t_tuple *normal)
+t_tuple *lighting(t_material *m, t_light *light, t_tuple *position, t_tuple *eye, t_tuple *normal, bool in_shadow)
 {
 	t_tuple *ambient, *diffiuse, *specular, *temp, *result;
 
@@ -60,7 +60,7 @@ t_tuple *lighting(t_material *m, t_light *light, t_tuple *position, t_tuple *eye
 	 */
 	double light_dot_normal = dot(lightv, normal);
 
-	if(light_dot_normal < 0)
+	if(light_dot_normal < 0 || in_shadow)
 	{
 		diffiuse = point(0,0,0);
 		specular = point(0,0,0);
